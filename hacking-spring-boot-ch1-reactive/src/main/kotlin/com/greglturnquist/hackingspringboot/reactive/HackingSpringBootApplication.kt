@@ -9,9 +9,12 @@ import org.springframework.boot.runApplication
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.bind.annotation.GetMapping
+import com.fasterxml.jackson.annotation.JsonAutoDetect
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility
 
 import java.util.Random
 import java.time.Duration
+import java.util.stream.Stream
 
 @SpringBootApplication
 class HackingSpringBootApplication
@@ -25,7 +28,9 @@ class ServerController(
   final val kitchen: KitchenService
 ) {
   @GetMapping(value = ["/server"], produces = [MediaType.TEXT_EVENT_STREAM_VALUE])
-  fun serveDishes(): Flux<Dish> = kitchen.dishes
+  fun serveDishes(): Flux<Dish> {
+    return kitchen.dishes
+  }
 }
 
 @Service
@@ -49,6 +54,7 @@ class KitchenService {
   val picker = Random()
 }
 
+@JsonAutoDetect(fieldVisibility = Visibility.ANY)
 class Dish {
   constructor(desc: String) {
     description = desc
